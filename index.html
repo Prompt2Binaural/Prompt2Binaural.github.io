@@ -5,37 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prompt2Binaural Demo Page</title>
     <style>
-        :root { --primary-color: #2c3e50; --accent-color: #3498db; }
-        body { font-family: 'Inter', -apple-system, sans-serif; margin: 0; padding: 40px; background-color: #fcfcfc; color: #333; line-height: 1.6; }
-        
-        /* 说明部分样式 */
-        .intro-section { max-width: 1200px; margin: 0 auto 40px auto; padding: 25px; background: white; border-left: 5px solid var(--accent-color); box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .intro-section h1 { margin-top: 0; color: var(--primary-color); }
-        .intro-section p { margin-bottom: 10px; color: #666; }
-        .method-list { display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px; }
-        .method-tag { background: #ebf5fb; color: #2980b9; padding: 4px 12px; border-radius: 15px; font-size: 0.85em; font-weight: 600; }
-
-        /* 表格样式 */
-        .table-container { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; background: white; min-width: 1400px; }
-        th { background-color: #f8f9fa; color: var(--primary-color); font-weight: 600; padding: 15px; border-bottom: 2px solid #eee; position: sticky; top: 0; z-index: 10; text-align: left; }
-        td { padding: 15px; border-bottom: 1px solid #eee; vertical-align: top; }
-
-        /* 内容特定样式 */
-        .text-cell { width: 180px; font-style: italic; font-size: 0.9em; }
-        .bi-part { margin-bottom: 12px; padding: 8px; background: #fdfdfd; border: 1px solid #f0f0f0; border-radius: 4px; }
-        .label { display: block; font-size: 11px; text-transform: uppercase; color: #888; font-weight: bold; margin-bottom: 4px; }
-        
-        /* 播放器样式 */
-        audio { width: 180px; height: 32px; filter: sepia(20%) saturate(70%) grayscale(10%); }
-        .model-audio { width: 160px; }
+        /* ... 保留之前的样式 ... */
+    
+        .intro-section { 
+            max-width: 1200px; 
+            margin: 0 0 40px 0; /* 修改这里：将 auto 改为 0，实现左对齐 */
+            padding: 25px; 
+            background: white; 
+            border-left: 5px solid var(--accent-color); 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
+            text-align: left; /* 确保文字左对齐 */
+        }
+    
+        .headphone-notice {
+            display: inline-flex;
+            align-items: center;
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: #fff3cd; /* 浅黄色背景，起到提醒作用 */
+            color: #856404;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+    
+        .headphone-notice span {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
     </style>
-</head>
-<body>
-
+    
     <section class="intro-section">
         <h1>Prompt2Binaural: Demo Page</h1>
         <p>This page demonstrates our model's ability to generate binaural audio from various prompts. We compare our approach against 6 baseline/alternative methods.</p>
+        
+        <div class="headphone-notice">
+            <span>🎧</span> 
+            Please wear headphones for the best binaural listening experience.
+        </div>
     </section>
 
     <div class="table-container">
