@@ -5,220 +5,473 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prompt2Binaural Demo Page</title>
     <style>
-        /* ... 保留之前的样式 ... */
-    
-        .intro-section { 
-            max-width: 1200px; 
-            margin: 0 0 40px 0; /* 修改这里：将 auto 改为 0，实现左对齐 */
-            padding: 25px; 
-            background: white; 
-            border-left: 5px solid var(--accent-color); 
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); 
-            text-align: left; /* 确保文字左对齐 */
+        :root {
+            --bg-color: #f4f7fb;
+            --panel-bg: #ffffff;
+            --border-color: #d7dfeb;
+            --text-color: #1f2937;
+            --muted-color: #5b6473;
+            --accent-color: #3b82f6;
+            --accent-soft: #e8f1ff;
+            --warning-bg: #fff4d6;
+            --warning-text: #8a5b00;
+            --shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
         }
-    
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 24px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text-color);
+            background: linear-gradient(180deg, #f8fbff 0%, var(--bg-color) 100%);
+        }
+
+        .page {
+            width: min(100%, 1380px);
+            margin: 0 auto;
+        }
+
+        .hero-card,
+        .method-card,
+        .table-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(215, 223, 235, 0.9);
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .hero-card {
+            padding: 28px 32px;
+            margin-bottom: 20px;
+        }
+
+        .hero-card h1 {
+            margin: 0 0 12px;
+            font-size: clamp(1.9rem, 2.6vw, 2.5rem);
+            line-height: 1.12;
+        }
+
+        .hero-card p {
+            margin: 0;
+            max-width: 820px;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--muted-color);
+        }
+
         .headphone-notice {
             display: inline-flex;
             align-items: center;
-            margin-top: 15px;
-            padding: 8px 15px;
-            background-color: #fff3cd; /* 浅黄色背景，起到提醒作用 */
-            color: #856404;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.95em;
+            gap: 8px;
+            margin-top: 18px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            font-size: 0.94rem;
+            font-weight: 600;
         }
-    
-        .headphone-notice span {
-            margin-right: 8px;
-            font-size: 1.2em;
+
+        .method-card {
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .method-card h2 {
+            margin: 0 0 8px;
+            font-size: 1.15rem;
+        }
+
+        .method-card p {
+            margin: 0 0 16px;
+            font-size: 0.95rem;
+            color: var(--muted-color);
+        }
+
+        .method-figure {
+            overflow: hidden;
+            border: 1px dashed #b9c7dc;
+            border-radius: 16px;
+            background: #f8fbff;
+        }
+
+        .method-figure img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .method-figure-placeholder {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            min-height: 220px;
+            padding: 24px;
+            text-align: center;
+            color: var(--muted-color);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .method-figure.is-missing .method-figure-placeholder {
+            display: flex;
+        }
+
+        .table-card {
+            padding: 16px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+            min-width: 1200px;
+        }
+
+        col.text-col {
+            width: 17%;
+        }
+
+        col.speaker-col {
+            width: 12%;
+        }
+
+        col.prompt-col {
+            width: 18%;
+        }
+
+        col.model-col {
+            width: 8.83%;
+        }
+
+        th,
+        td {
+            padding: 12px 10px;
+            vertical-align: top;
+            border-bottom: 1px solid #e7edf5;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background: #eef4fc;
+            color: #10233f;
+            font-size: 0.82rem;
+            line-height: 1.45;
+            letter-spacing: 0.02em;
+            text-align: left;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .text-cell {
+            font-size: 0.92rem;
+            line-height: 1.65;
+            color: var(--text-color);
+        }
+
+        .label {
+            display: inline-block;
+            margin-bottom: 8px;
+            padding: 4px 8px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: #17438e;
+            font-size: 0.74rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .speaker-cell,
+        .model-cell {
+            text-align: center;
+        }
+
+        .prompt-stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .bi-part {
+            padding: 10px 12px;
+            border: 1px solid #d7dfeb;
+            border-radius: 12px;
+            background: #f9fbfe;
+        }
+
+        .prompt-text {
+            display: block;
+            font-size: 0.84rem;
+            line-height: 1.55;
+            color: var(--muted-color);
+        }
+
+        audio {
+            width: 100%;
+            min-width: 0;
+            height: 34px;
+        }
+
+        .model-audio {
+            max-width: 132px;
+        }
+
+        @media (max-width: 1280px) {
+            body {
+                padding: 18px;
+            }
+
+            .hero-card,
+            .method-card,
+            .table-card {
+                border-radius: 16px;
+            }
+
+            table {
+                min-width: 1120px;
+            }
+
+            th,
+            td {
+                padding: 10px 8px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .hero-card,
+            .method-card {
+                padding: 20px;
+            }
+
+            .table-card {
+                padding: 10px;
+            }
+
+            table {
+                min-width: 1040px;
+            }
         }
     </style>
-    
-    <section class="intro-section">
-        <h1>Prompt2Binaural: Demo Page</h1>
-        <p>This page demonstrates our model's ability to generate binaural audio from various prompts.</p>
-        
-        <div class="headphone-notice">
-            <span>🎧</span> 
-            Please wear headphones for the best binaural listening experience.
-        </div>
-    </section>
+</head>
+<body>
+    <main class="page">
+        <section class="hero-card">
+            <h1>Prompt2Binaural: Demo Page</h1>
+            <p>This page demonstrates our model's ability to generate binaural audio from different types of prompts and spatial parameters.</p>
+            <div class="headphone-notice">
+                <span>🎧</span>
+                <span>Please wear headphones for the best binaural listening experience.</span>
+            </div>
+        </section>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                   <th>Text</th>
-                   <th>Speaker Prompt</th>
-                   <th>Binaural Prompt or parameter</th>
-                   <th>GT</th>
-                   <th>M2B</th>
-                   <th>TTS-HRTF</th>
-                   <th>TTS-M2B</th>
-                   <th>Prompt2Binaural (Speech)</th>
-                   <th>Prompt2Binaural (Description)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="text-cell">"He added that public transport improvements must also be maintained."</td>
-                    
-                    <td>
-                        <span class="label">Reference Speaker</span>
-                        <audio controls src="Audio/spk_prompt/p226_002_mic1.wav"></audio>
-                    </td>
-                    
-                    <td>
-                        <div class="bi-part">
-                            <span class="label">Speech Prompt</span>
-                            <audio controls src="Audio/bina_prompt/p225_017_mic1.wav"></audio>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Description Prompt</span>
-                            <span style="font-size: 0.85em;">"The speaker goes from being near to being far from the left front"</span>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Binaural Parameter </span>
-                            <span style="font-size: 0.85em;">"Direction:45°, Distance: near to far"</span>
-                        </div>
-                    </td>
+        <section class="method-card">
+            <h2>Method Overview</h2>
+            <p>You can place your method figure at <code>method-figure.png</code> in the project root, and it will appear here automatically.</p>
+            <figure class="method-figure">
+                <img
+                    src="method-figure.jpg"
+                    alt="Overview of the Prompt2Binaural method"
+                    onerror="this.parentElement.classList.add('is-missing'); this.remove();"
+                >
+                <div class="method-figure-placeholder">
+                    Add your method figure as <code>method-figure.png</code> to show it at the top of this page.
+                </div>
+            </figure>
+        </section>
 
-                    <td><audio class="model-audio" controls src="Audio/GT/p226_293_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/M2B/p226_293_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-HRTF/p226_293_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-M2B/p226_293_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p226_293_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p226_293_mic1.wav"></audio></td>
-                </tr>
-
-                <tr>
-                    <td class="text-cell">"I was inspired by two things."</td>
-                    
-                    <td>
-                        <span class="label">Reference Speaker</span>
-                        <audio controls src="Audio/spk_prompt/p230_036_mic1.wav"></audio>
-                    </td>
-                    
-                    <td>
-                        <div class="bi-part">
-                            <span class="label">Speech Prompt</span>
-                            <audio controls src="Audio/bina_prompt/p228_238_mic1.wav"></audio>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Description Prompt</span>
-                            <span style="font-size: 0.85em;">"The speaker moves forward from a close position to a distant one in front"</span>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Binaural Parameter </span>
-                            <span style="font-size: 0.85em;">"Direction:0°, Distance: near to far"</span>
-                        </div>
-                    </td>
-
-                    <td><audio class="model-audio" controls src="Audio/GT/p230_045_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/M2B/p230_045_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-HRTF/p230_045_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-M2B/p230_045_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p230_045_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p230_045_mic1.wav"></audio></td>
-                </tr>
-
-                <tr>
-                    <td class="text-cell">"In addition, investor choice is reduced."</td>
-                    
-                    <td>
-                        <span class="label">Reference Speaker</span>
-                        <audio controls src="Audio/spk_prompt/p259_006_mic1.wav"></audio>
-                    </td>
-                    
-                    <td>
-                        <div class="bi-part">
-                            <span class="label">Speech Prompt</span>
-                            <audio controls src="Audio/bina_prompt/p232_044_mic1.wav"></audio>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Description Prompt</span>
-                            <span style="font-size: 0.85em;">"The speaker stands unmoving in the back"</span>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Binaural Parameter </span>
-                            <span style="font-size: 0.85em;">"Direction:180°, Distance: stationary"</span>
-                        </div>
-                    </td>
-
-                    <td><audio class="model-audio" controls src="Audio/GT/p259_122_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/M2B/p259_122_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-HRTF/p259_122_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-M2B/p259_122_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p259_122_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p259_122_mic1.wav"></audio></td>
-                </tr>
-
-                <tr>
-                    <td class="text-cell">"It is a love affair."</td>
-                    
-                    <td>
-                        <span class="label">Reference Speaker</span>
-                        <audio controls src="Audio/spk_prompt/p271_020_mic1.wav"></audio>
-                    </td>
-                    
-                    <td>
-                        <div class="bi-part">
-                            <span class="label">Speech Prompt</span>
-                            <audio controls src="Audio/bina_prompt/p233_033_mic1.wav"></audio>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Description Prompt</span>
-                            <span style="font-size: 0.85em;">"The speaker traveles from nearby to far away from behind"</span>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Binaural Parameter </span>
-                            <span style="font-size: 0.85em;">"Direction:180°, Distance: near to far"</span>
-                        </div>
-                    </td>
-
-                    <td><audio class="model-audio" controls src="Audio/GT/p271_105_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/M2B/p271_105_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-HRTF/p271_105_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-M2B/p271_105_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p271_105_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p271_105_mic1.wav"></audio></td>
-                </tr>
-
-                <tr>
-                    <td class="text-cell">"Today, however, half of them get this financial help."</td>
-                    
-                    <td>
-                        <span class="label">Reference Speaker</span>
-                        <audio controls src="Audio/spk_prompt/p303_044_mic1.wav"></audio>
-                    </td>
-                    
-                    <td>
-                        <div class="bi-part">
-                            <span class="label">Speech Prompt</span>
-                            <audio controls src="Audio/bina_prompt/p226_261_mic1.wav"></audio>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Description Prompt</span>
-                            <span style="font-size: 0.85em;">"The speaker goes farther away starting on the right"</span>
-                        </div>
-                        <div class="bi-part">
-                            <span class="label">Binaural Parameter </span>
-                            <span style="font-size: 0.85em;">"Direction:270°, Distance: near to far"</span>
-                        </div>
-                    </td>
-
-                    <td><audio class="model-audio" controls src="Audio/GT/p303_108_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/M2B/p303_108_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-HRTF/p303_108_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/TTS-M2B/p303_108_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p303_108_mic1.wav"></audio></td>
-                    <td><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p303_108_mic1.wav"></audio></td>
-                </tr>
-
-                </tbody>
-        </table>
-    </div>
-
+        <section class="table-card">
+            <div class="table-container">
+                <table>
+                    <colgroup>
+                        <col class="text-col">
+                        <col class="speaker-col">
+                        <col class="prompt-col">
+                        <col class="model-col">
+                        <col class="model-col">
+                        <col class="model-col">
+                        <col class="model-col">
+                        <col class="model-col">
+                        <col class="model-col">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Text</th>
+                            <th>Speaker Prompt</th>
+                            <th>Binaural Prompt<br>or Parameter</th>
+                            <th>GT</th>
+                            <th>M2B</th>
+                            <th>TTS-HRTF</th>
+                            <th>TTS-M2B</th>
+                            <th>Prompt2Binaural<br>(Speech)</th>
+                            <th>Prompt2Binaural<br>(Description)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-cell">"He added that public transport improvements must also be maintained."</td>
+                            <td class="speaker-cell">
+                                <span class="label">Reference Speaker</span>
+                                <audio controls src="Audio/spk_prompt/p226_002_mic1.wav"></audio>
+                            </td>
+                            <td>
+                                <div class="prompt-stack">
+                                    <div class="bi-part">
+                                        <span class="label">Speech Prompt</span>
+                                        <audio controls src="Audio/bina_prompt/p225_017_mic1.wav"></audio>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Description Prompt</span>
+                                        <span class="prompt-text">"The speaker goes from being near to being far from the left front"</span>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Binaural Parameter</span>
+                                        <span class="prompt-text">"Direction:45°, Distance: near to far"</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/GT/p226_293_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/M2B/p226_293_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-HRTF/p226_293_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-M2B/p226_293_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p226_293_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p226_293_mic1.wav"></audio></td>
+                        </tr>
+                        <tr>
+                            <td class="text-cell">"I was inspired by two things."</td>
+                            <td class="speaker-cell">
+                                <span class="label">Reference Speaker</span>
+                                <audio controls src="Audio/spk_prompt/p230_036_mic1.wav"></audio>
+                            </td>
+                            <td>
+                                <div class="prompt-stack">
+                                    <div class="bi-part">
+                                        <span class="label">Speech Prompt</span>
+                                        <audio controls src="Audio/bina_prompt/p228_238_mic1.wav"></audio>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Description Prompt</span>
+                                        <span class="prompt-text">"The speaker moves forward from a close position to a distant one in front"</span>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Binaural Parameter</span>
+                                        <span class="prompt-text">"Direction:0°, Distance: near to far"</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/GT/p230_045_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/M2B/p230_045_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-HRTF/p230_045_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-M2B/p230_045_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p230_045_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p230_045_mic1.wav"></audio></td>
+                        </tr>
+                        <tr>
+                            <td class="text-cell">"In addition, investor choice is reduced."</td>
+                            <td class="speaker-cell">
+                                <span class="label">Reference Speaker</span>
+                                <audio controls src="Audio/spk_prompt/p259_006_mic1.wav"></audio>
+                            </td>
+                            <td>
+                                <div class="prompt-stack">
+                                    <div class="bi-part">
+                                        <span class="label">Speech Prompt</span>
+                                        <audio controls src="Audio/bina_prompt/p232_044_mic1.wav"></audio>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Description Prompt</span>
+                                        <span class="prompt-text">"The speaker stands unmoving in the back"</span>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Binaural Parameter</span>
+                                        <span class="prompt-text">"Direction:180°, Distance: stationary"</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/GT/p259_122_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/M2B/p259_122_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-HRTF/p259_122_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-M2B/p259_122_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p259_122_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p259_122_mic1.wav"></audio></td>
+                        </tr>
+                        <tr>
+                            <td class="text-cell">"It is a love affair."</td>
+                            <td class="speaker-cell">
+                                <span class="label">Reference Speaker</span>
+                                <audio controls src="Audio/spk_prompt/p271_020_mic1.wav"></audio>
+                            </td>
+                            <td>
+                                <div class="prompt-stack">
+                                    <div class="bi-part">
+                                        <span class="label">Speech Prompt</span>
+                                        <audio controls src="Audio/bina_prompt/p233_033_mic1.wav"></audio>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Description Prompt</span>
+                                        <span class="prompt-text">"The speaker traveles from nearby to far away from behind"</span>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Binaural Parameter</span>
+                                        <span class="prompt-text">"Direction:180°, Distance: near to far"</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/GT/p271_105_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/M2B/p271_105_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-HRTF/p271_105_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-M2B/p271_105_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p271_105_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p271_105_mic1.wav"></audio></td>
+                        </tr>
+                        <tr>
+                            <td class="text-cell">"Today, however, half of them get this financial help."</td>
+                            <td class="speaker-cell">
+                                <span class="label">Reference Speaker</span>
+                                <audio controls src="Audio/spk_prompt/p303_044_mic1.wav"></audio>
+                            </td>
+                            <td>
+                                <div class="prompt-stack">
+                                    <div class="bi-part">
+                                        <span class="label">Speech Prompt</span>
+                                        <audio controls src="Audio/bina_prompt/p226_261_mic1.wav"></audio>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Description Prompt</span>
+                                        <span class="prompt-text">"The speaker goes farther away starting on the right"</span>
+                                    </div>
+                                    <div class="bi-part">
+                                        <span class="label">Binaural Parameter</span>
+                                        <span class="prompt-text">"Direction:270°, Distance: near to far"</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/GT/p303_108_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/M2B/p303_108_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-HRTF/p303_108_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/TTS-M2B/p303_108_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Speech)/p303_108_mic1.wav"></audio></td>
+                            <td class="model-cell"><audio class="model-audio" controls src="Audio/Prompt2Binaural (Description)/p303_108_mic1.wav"></audio></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
