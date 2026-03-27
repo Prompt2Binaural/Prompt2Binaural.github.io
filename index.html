@@ -57,10 +57,11 @@
 
         .hero-card p {
             margin: 0;
-            max-width: 820px;
+            max-width: none;
             font-size: 1rem;
             line-height: 1.7;
             color: var(--muted-color);
+            white-space: nowrap;
         }
 
         .headphone-notice {
@@ -266,6 +267,10 @@
             table {
                 min-width: 1040px;
             }
+
+            .hero-card p {
+                white-space: normal;
+            }
         }
     </style>
 </head>
@@ -282,7 +287,6 @@
 
         <section class="method-card">
             <h2>Method Overview</h2>
-            <p>You can place your method figure at <code>method-figure.png</code> in the project root, and it will appear here automatically.</p>
             <figure class="method-figure">
                 <img
                     src="method-figure.jpg"
